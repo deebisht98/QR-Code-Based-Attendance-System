@@ -1,0 +1,73 @@
+<style>
+#preview{
+   width:500px;
+   height: 500px;
+   margin:0px auto;
+}
+</style>
+<div id = "result"></div>
+				<br />
+				<br />
+				<form enctype = "multipart/form-data" onkeypress="return event.keyCode != 13">
+					<div class = "form-group">
+					<label>SCAN YOUR QR-CODE BELOW</label>
+						<input type = "password" id = "student" class = "form-control" required = "required" autofocus/>
+						<button type = "button" id = "login" class = "btn btn-primary btn-block"><span class = "glyphicon glyphicon-login"></span>Login</button>
+					</div>
+				</form>
+<script>
+document.getElementById('student').onkeyup = function(ev) {
+  var el = document.getElementById('student');
+  if (el.value.length >= 10) {
+    document.getElementById('login').click();
+  }
+}
+</script>				
+<video id="preview"></video>
+<script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script type="text/javascript">
+    var scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 5, mirror: false });
+    scanner.addListener('scan',function(content){
+	    $("#student").val(content);
+    });
+    Instascan.Camera.getCameras().then(function (cameras){
+        if(cameras.length>0){
+            scanner.start(cameras[0]);
+            $('[name="options"]').on('change',function(){
+                if($(this).val()==1){
+                    if(cameras[0]!=""){
+                        scanner.start(cameras[0]);
+                    }else{
+                        alert('No Front camera found!');
+                    }
+                }else if($(this).val()==2){
+                    if(cameras[1]!=""){
+                        scanner.start(cameras[1]);
+                    }else{
+                        alert('No Back camera found!');
+                    }
+                }
+            });
+        }else{
+            console.error('No cameras found.');
+            alert('No cameras found.');
+        }
+    }).catch(function(e){
+        console.error(e);
+        alert(e);
+    });
+</script>
+<script src = "js/jquery.js"></script>
+<script src = "js/bootstrap.js"></script>
+<script src = "js/login.js"></script>
+
+
+<div class="btn-group btn-group-toggle mb-5" data-toggle="buttons">
+  <label class="btn btn-primary active">
+    <input type="radio" name="options" value="1" autocomplete="off" checked> Front Camera
+  </label>
+  <label class="btn btn-secondary">
+    <input type="radio" name="options" value="2" autocomplete="off"> Back Camera
+  </label>
+</div>
